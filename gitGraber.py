@@ -19,6 +19,7 @@ from termcolor import colored
 from urllib.parse import urlparse
 from multiprocessing.dummy import Pool
 from crontab import CronTab
+from verify import *
 
 def getFilenameForQuery(query):
     if query:
@@ -326,6 +327,7 @@ def doSearchGithub(args,tokenMap, tokenCombos,keyword):
             for rawGitUrl in content.keys():
                 tokensResult = checkToken(content[rawGitUrl][0].text, tokenMap, tokenCombos)
                 for token in tokensResult.keys():
+                    print(content[rawGitUrl][2])
                     displayMessage = displayResults(token, tokensResult, rawGitUrl, content[rawGitUrl])
                     if args.discord:
                         notifyDiscord(displayMessage)

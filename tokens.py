@@ -11,7 +11,7 @@ def initTokensMap():
     tokensList.append(Token('GOOGLE_FIREBASE_OR_MAPS', '(AIza[0-9A-Za-z\\-_]{35})'))
     tokensList.append(Token('GOOGLE_OAUTH_ACCESS_TOKEN', '(ya29\\.[0-9A-Za-z\\-_]+)'))
     tokensList.append(Token('HEROKU', '(?:HEROKU_API_KEY|HEROKU_API_TOKEN|HEROKU_API_SECRET|heroku_api_key|heroku_api_token|heroku_api_secret|heroku_key|HEROKU_TOKEN|HEROKU_AUTH|heroku_auth|herokuAuth|heroku_auth_token)[\W|\s]{1,}([0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12})\W'))
-#   tokensList.append(Token('JSON_WEB_TOKEN', '(eyJ[a-zA-Z0-9]{10,}\.eyJ[a-zA-Z0-9]{10,}\.[a-zA-Z0-9_-]{10,})'))
+    tokensList.append(Token('JSON_WEB_TOKEN', '(eyJ[a-zA-Z0-9]{10,}\.eyJ[a-zA-Z0-9]{10,}\.[a-zA-Z0-9_-]{10,})'))
     tokensList.append(Token('MAILCHIMP', '\W(?:[a-f0-9]{32}(-us[0-9]{1,2}))\W'))
     tokensList.append(Token('MAILGUN', '(key-[0-9a-f]{32})'))
     tokensList.append(Token('OPENAI', '(sk-[a-zA-Z0-9]{48})'))
