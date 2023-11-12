@@ -20,6 +20,11 @@ from urllib.parse import urlparse
 from multiprocessing.dummy import Pool
 from crontab import CronTab
 from verify import *
+import pickle
+
+
+already_seen = "./previous_secrets.p"
+history = []
 
 def getFilenameForQuery(query):
     if query:
@@ -329,8 +334,9 @@ def doSearchGithub(args,tokenMap, tokenCombos,keyword):
                 for token in tokensResult.keys():
                     old = int(content[rawGitUrl][2][1:].split(" ")[0])
                     print(old)
-                    if old < 60:
+                    if old <= args.limit_days and rawGitUrl not in history:
                         displayMessage = displayResults(token, tokensResult, rawGitUrl, content[rawGitUrl])
+                        history.append(rawGitUrl)
                         if args.discord:
                             notifyDiscord(displayMessage)
                         if args.slack:
@@ -339,6 +345,8 @@ def doSearchGithub(args,tokenMap, tokenCombos,keyword):
                             notifyTelegram(displayMessage)
                         if args.wordlist:
                             writeToWordlist(rawGitUrl, args.wordlist)
+                    with open(already_seen,'wb') as f:
+                        pickle.dumps(history,f)
 
 def searchGithub(keywordsFile, args):
     tokenMap, tokenCombos = tokens.initTokensMap()
@@ -361,8 +369,11 @@ parser.add_argument('-s', '--slack', action='store_true', help='Enable slack not
 parser.add_argument('-tg', '--telegram', action='store_true', help='Enable telegram notifications', default=False)
 parser.add_argument('-m', '--monitor', action='store_true', help='Monitors your query by adding a cron job for every 30 mins',default=False)
 parser.add_argument('-w', '--wordlist', action='store', dest='wordlist', help='Create a wordlist that fills dynamically with discovered filenames on GitHub')
-parser.add_argument('-l', '--limit', action='store', dest='limit_days', type=int, help='Limit the results to commits less than N days old', default=None)
+parser.add_argument('-l', '--limit', action='store', dest='limit_days', type=int, help='Limit the results to commits less than N days old', default=60)
 args = parser.parse_args()
+if os.path.exists(already_seen):
+    with open(already_seen) as f:
+        history = pickle.load(f)
 
 if not args.query or args.query == "":
     print('No query (-q or --query) is specified, default query will be used')
