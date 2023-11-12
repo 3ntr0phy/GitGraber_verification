@@ -327,16 +327,18 @@ def doSearchGithub(args,tokenMap, tokenCombos,keyword):
             for rawGitUrl in content.keys():
                 tokensResult = checkToken(content[rawGitUrl][0].text, tokenMap, tokenCombos)
                 for token in tokensResult.keys():
-                    print(content[rawGitUrl][2])
-                    displayMessage = displayResults(token, tokensResult, rawGitUrl, content[rawGitUrl])
-                    if args.discord:
-                        notifyDiscord(displayMessage)
-                    if args.slack:
-                        notifySlack(displayMessage)
-                    if args.telegram:
-                        notifyTelegram(displayMessage)
-                    if args.wordlist:
-                        writeToWordlist(rawGitUrl, args.wordlist)
+                    old = int(content[rawGitUrl][2][1:].split(" ")[0])
+                    print(old)
+                    if old < 60:
+                        displayMessage = displayResults(token, tokensResult, rawGitUrl, content[rawGitUrl])
+                        if args.discord:
+                            notifyDiscord(displayMessage)
+                        if args.slack:
+                            notifySlack(displayMessage)
+                        if args.telegram:
+                            notifyTelegram(displayMessage)
+                        if args.wordlist:
+                            writeToWordlist(rawGitUrl, args.wordlist)
 
 def searchGithub(keywordsFile, args):
     tokenMap, tokenCombos = tokens.initTokensMap()
