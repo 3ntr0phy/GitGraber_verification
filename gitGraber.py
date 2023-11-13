@@ -323,6 +323,7 @@ def doRequestGitHub(url, authd=True, verbose=False):
             pass
 
 def doSearchGithub(args,tokenMap, tokenCombos,keyword):
+    global history
     url = config.GITHUB_API_URL + urllib.parse.quote(githubQuery +' '+keyword.strip()) +config.GITHUB_SEARCH_PARAMS
     print(url)
     response = doRequestGitHub(url, True, True)
@@ -345,8 +346,8 @@ def doSearchGithub(args,tokenMap, tokenCombos,keyword):
                             notifyTelegram(displayMessage)
                         if args.wordlist:
                             writeToWordlist(rawGitUrl, args.wordlist)
-                    with open(already_seen,'wb') as f:
-                        pickle.dumps(history,f)
+                        with open(already_seen,'wb') as f:
+                            pickle.dumps(history,f)
 
 def searchGithub(keywordsFile, args):
     tokenMap, tokenCombos = tokens.initTokensMap()
