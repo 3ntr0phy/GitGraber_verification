@@ -11,3 +11,4 @@ TELEGRAM_CONFIG = {
     "token": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
     "chat_id": -999999999999999
 }
+FOLDER = 'X'

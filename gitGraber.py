@@ -23,15 +23,15 @@ from verify import *
 import pickle
 
 
-already_seen = "./previous_secrets.p"
+already_seen = f"{config.FOLDER}/previous_secrets.p"
 history = []
 
 def getFilenameForQuery(query):
     if query:
         query_name = query.replace(" ", "_")
-        return f'rawGitUrls_{query_name}.txt'
+        return f'{config.FOLDER}/rawGitUrls_{query_name}.txt'
     else:
-        return 'rawGitUrls.txt'
+        return f'{config.FOLDER}/rawGitUrls.txt'
 
 def createEmptyBinaryFile(name):
     f = open(name, 'wb')
@@ -333,7 +333,10 @@ def doSearchGithub(args,tokenMap, tokenCombos,keyword):
             for rawGitUrl in content.keys():
                 tokensResult = checkToken(content[rawGitUrl][0].text, tokenMap, tokenCombos)
                 for token in tokensResult.keys():
-                    old = int(content[rawGitUrl][2][1:].split(" ")[0])
+                    if "days" in content[rawGitUrl][2]:
+                        old = int(content[rawGitUrl][2][1:].split(" ")[0])
+                    else:
+                        old = 0
                     print(old)
                     if old <= args.limit_days and rawGitUrl not in history:
                         displayMessage = displayResults(token, tokensResult, rawGitUrl, content[rawGitUrl])
