@@ -163,6 +163,9 @@ def displayResults(result, tokenResult, rawGitUrl, urlInfos):
     print(tokenString.strip())
     repoString = '[+] Repository URL : '+urlInfos[1]
     print(repoString)
+    verified = verify(result,tokenResult[result])
+    repoString = '[+] Verified : '+verified
+
     if urlInfos[5]:
         orgString = '[+] User Organizations : '+','.join(urlInfos[5])
         print(orgString)
@@ -325,19 +328,20 @@ def doRequestGitHub(url, authd=True, verbose=False):
 def doSearchGithub(args,tokenMap, tokenCombos,keyword):
     global history
     url = config.GITHUB_API_URL + urllib.parse.quote(githubQuery +' '+keyword.strip()) +config.GITHUB_SEARCH_PARAMS
-    print(url)
+    #print(url)
     response = doRequestGitHub(url, True, True)
     if response:
         content = parseResults(response.text, args.limit_days)
         if content:
             for rawGitUrl in content.keys():
                 tokensResult = checkToken(content[rawGitUrl][0].text, tokenMap, tokenCombos)
+                #print(f"Inside content loop\n {content[rawGitUrl][2]} \n {history}")
                 for token in tokensResult.keys():
                     if "days" in content[rawGitUrl][2]:
                         old = int(content[rawGitUrl][2][1:].split(" ")[0])
                     else:
                         old = 0
-                    print(old)
+                    #print(old)
                     if old <= args.limit_days and rawGitUrl not in history:
                         displayMessage = displayResults(token, tokensResult, rawGitUrl, content[rawGitUrl])
                         history.append(rawGitUrl)
@@ -350,7 +354,7 @@ def doSearchGithub(args,tokenMap, tokenCombos,keyword):
                         if args.wordlist:
                             writeToWordlist(rawGitUrl, args.wordlist)
                         with open(already_seen,'wb') as f:
-                            pickle.dumps(history,f)
+                            pickle.dump(history,f)
 
 def searchGithub(keywordsFile, args):
     tokenMap, tokenCombos = tokens.initTokensMap()
@@ -376,7 +380,7 @@ parser.add_argument('-w', '--wordlist', action='store', dest='wordlist', help='C
 parser.add_argument('-l', '--limit', action='store', dest='limit_days', type=int, help='Limit the results to commits less than N days old', default=60)
 args = parser.parse_args()
 if os.path.exists(already_seen):
-    with open(already_seen) as f:
+    with open(already_seen,'rb') as f:
         history = pickle.load(f)
 
 if not args.query or args.query == "":
