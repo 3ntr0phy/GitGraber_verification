@@ -164,7 +164,7 @@ def displayResults(result, tokenResult, rawGitUrl, urlInfos):
     repoString = '[+] Repository URL : '+urlInfos[1]
     print(repoString)
     verified = verify(result,tokenResult[result])
-    repoString = '[+] Verified : '+verified
+    verifiedString = '[+] Verified : '+ str(verified)
 
     if urlInfos[5]:
         orgString = '[+] User Organizations : '+','.join(urlInfos[5])
@@ -172,7 +172,7 @@ def displayResults(result, tokenResult, rawGitUrl, urlInfos):
         orgString = '\n'+orgString
     else:
         orgString = ''
-    return possibleTokenString+'\n'+commitString+'\n'+urlString+'\n'+tokenString+'\n'+repoString+orgString
+    return possibleTokenString+'\n'+commitString+'\n'+urlString+'\n'+tokenString+'\n'+verifiedString+'\n'+repoString+orgString
 
 def parseResults(content, limit_days=None):
     data = json.loads(content)
